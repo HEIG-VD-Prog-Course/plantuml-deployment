@@ -1,6 +1,6 @@
 networks:
   traefik_network:
-    name: traefik_network
+    external: true
 
 services:
 
