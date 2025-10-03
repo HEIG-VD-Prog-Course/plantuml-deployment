@@ -9,7 +9,7 @@ services:
     command:
       ## Global
       # Uncomment next line when testing
-      # - --log.level=DEBUG
+      - --log.level=DEBUG
       - --api.dashboard=${TRAEFIK_ENABLE_DASHBOARD:-false}
       ## Docker
       - --providers.docker=true
@@ -26,10 +26,11 @@ services:
       - --entrypoints.https.http.tls.certresolver=letsencrypt
       ## Certificates
       # Uncomment next line when testing
-      # - --certificatesResolvers.letsencrypt.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory
+      - --certificatesResolvers.letsencrypt.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory
       - --certificatesresolvers.letsencrypt.acme.email=${TRAEFIK_ACME_EMAIL}
       - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
-      - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http
     restart: unless-stopped
     networks:
       - traefik_network
