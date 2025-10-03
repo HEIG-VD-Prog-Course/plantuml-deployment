@@ -11,7 +11,7 @@ services:
       - traefik_network
     image: plantuml/plantuml-server:${PLANTUML_IMAGE_VERSION:-latest}
     expose:
-      - 9090
+      - 8080
     labels:
       ## Traefik
       - traefik.enable=true
