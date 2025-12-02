@@ -1,0 +1,34 @@
+networks:
+  traefik_network:
+    external: true
+
+services:
+  calibre:
+    image: lscr.io/linuxserver/calibre:${CALIBRE_IMAGE_VERSION:-latest}
+    container_name: calibre
+    restart: unless-stopped
+    security_opt:
+      - seccomp:unconfined #optional
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - PASSWORD=${CALIBRE_PASSWORD:-changeme}
+    volumes:
+      - ./config:/config
+    networks:
+      - traefik_network
+    shm_size: "1gb"
+    ports:
+      - 8181:8181 #HTTPS GUI (required for full functionality)
+      - 8081:8081 #optional - webserver (must be enabled in Calibre settings)
+    labels:
+      ## Traefik
+      - traefik.enable=true
+      - traefik.docker.network=traefik_network
+      ## HTTPS
+      - traefik.http.routers.calibre.entrypoints=https
+      - traefik.http.routers.calibre.rule=Host(`${CALIBRE_FULLY_QUALIFIED_DOMAIN_NAME}`)
+      ## Services - routing to internal HTTPS port
+      - traefik.http.services.calibre.loadbalancer.server.port=8181
+      - traefik.http.services.calibre.loadbalancer.server.scheme=https
