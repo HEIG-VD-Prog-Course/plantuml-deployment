@@ -32,3 +32,6 @@ services:
       ## Services - routing to internal HTTPS port
       - traefik.http.services.calibre.loadbalancer.server.port=8181
       - traefik.http.services.calibre.loadbalancer.server.scheme=https
+      - traefik.http.services.calibre.loadbalancer.serverstransport=calibre-transport
+      ## ServersTransport - skip TLS verification for self-signed cert
+      - traefik.http.serversTransports.calibre-transport.insecureSkipVerify=true
