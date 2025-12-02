@@ -1,4 +1,4 @@
-# Calibre
+# Kavita
 
 ## Start the application for production mode
 

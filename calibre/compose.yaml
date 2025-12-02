@@ -3,31 +3,27 @@ networks:
     external: true
 
 services:
-  calibre:
-    image: lscr.io/linuxserver/calibre:${CALIBRE_IMAGE_VERSION:-latest}
-    container_name: calibre
+  kavita:
+    image: jvmilazz0/kavita:${KAVITA_IMAGE_VERSION:-latest}
+    container_name: kavita
     restart: unless-stopped
-    security_opt:
-      - seccomp:unconfined #optional
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-      - PASSWORD=${CALIBRE_PASSWORD:-changeme}
+      - TZ=${TZ:-Europe/Zurich}
     volumes:
-      - ./config:/config
+      - ./config:/kavita/config # /kavita/config must not be changed
+      - ./data/manga:/manga
+      - ./data/comics:/comics
+      - ./data/books:/books
     networks:
       - traefik_network
-    shm_size: "1gb"
     ports:
-      - 8181:8181 #HTTPS GUI (required for full functionality)
-      - 8081:8081 #optional - webserver (must be enabled in Calibre settings)
+      - 5000:5000
     labels:
       ## Traefik
       - traefik.enable=true
       - traefik.docker.network=traefik_network
       ## HTTPS
-      - traefik.http.routers.calibre.entrypoints=https
-      - traefik.http.routers.calibre.rule=Host(`${CALIBRE_FULLY_QUALIFIED_DOMAIN_NAME}`)
+      - traefik.http.routers.kavita.entrypoints=https
+      - traefik.http.routers.kavita.rule=Host(`${KAVITA_FULLY_QUALIFIED_DOMAIN_NAME}`)
       ## Services
-      - traefik.http.services.calibre.loadbalancer.server.port=8080
+      - traefik.http.services.kavita.loadbalancer.server.port=5000
